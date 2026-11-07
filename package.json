@@ -1,0 +1,37 @@
+{
+  "name": "haunted-ink",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A local dark academic writing desk for English CS manuscripts.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "node server/index.ts",
+    "build": "vite build",
+    "start": "NODE_ENV=production node server/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --project unit --project server",
+    "test:live": "vitest run --project live",
+    "test:e2e": "playwright test",
+    "validate:kiro": "node scripts/validate-kiro-config.mjs",
+    "check": "npm run typecheck && npm test && npm run validate:kiro"
+  },
+  "dependencies": {
+    "diff": "^9.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  }
+}
