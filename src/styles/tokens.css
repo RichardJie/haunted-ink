@@ -1,0 +1,79 @@
+:root {
+  /* night ink surfaces */
+  --night: #0e0d11;
+  --night-2: #16141b;
+  --night-3: #1f1c25;
+  --rule: #322d39;
+  --rule-lit: #575061;
+  --bone: #ebe4d6;
+  --dust: #b5ad9f;
+
+  /* aged ivory, only where text is read and written */
+  --ivory: #f1e9d8;
+  --ivory-2: #e9dfca;
+  --ivory-edge: #d4c5a6;
+  --ink: #1c1916;
+  --ink-muted: #574e45;
+  --wet-ink: #6b3410;
+
+  /* candlelit brass */
+  --brass: #c9a45c;
+  --brass-lit: #e2c27f;
+
+  /* spectral reviewers */
+  --spectral: #a9cadb;
+  --spectral-dim: #6f93a5;
+  --spectral-ink: #2a5466;
+
+  /* status and concerns */
+  --ink-red: #9b2a2b;
+  --ink-red-lit: #ec9a94;
+  --amber-ink: #7a5718;
+  --amber-lit: #e3b865;
+  --verdigris: #2f6b5e;
+  --verdigris-lit: #7cc4b0;
+
+  /* names kept for the reference ledger, revision sheet and dialogs */
+  --obsidian: #0e0d11;
+  --obsidian-2: #16141b;
+  --hairline: #322d39;
+  --hairline-lit: #575061;
+  --parchment: #f1e9d8;
+  --parchment-edge: #d4c5a6;
+  --candle: #e2c27f;
+
+  --serif: "Times New Roman", Times, "SimSun", "Songti SC", serif;
+  --sans: "Avenir Next", "Helvetica Neue", "PingFang SC", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: dark; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--night);
+  background-image:
+    radial-gradient(ellipse 40% 50% at 8% 18%, rgba(201, 164, 92, 0.09) 0%, rgba(201, 164, 92, 0) 70%),
+    radial-gradient(ellipse 45% 40% at 92% 6%, rgba(169, 202, 219, 0.06) 0%, rgba(169, 202, 219, 0) 70%),
+    linear-gradient(180deg, #121017 0%, var(--night) 60%);
+  background-attachment: fixed;
+  color: var(--bone);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+h1, h2, h3, p { margin: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+a { color: var(--brass-lit); }
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; }
+.smallcaps { font-family: var(--serif); font-variant: small-caps; letter-spacing: 0.14em; font-weight: 400; font-size: 1.15rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.muted { color: var(--dust); }
+.hint { font-size: 0.78rem; color: var(--dust); margin-top: 6px; }
+.label { display: block; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--dust); margin: 14px 0 6px; font-weight: 600; }
+.engraving { color: var(--brass); flex: none; }
+
+:focus-visible { outline: 2px solid var(--brass-lit); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

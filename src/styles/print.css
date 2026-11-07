@@ -1,0 +1,13 @@
+.print-only { display: none; }
+@media print {
+  @page { margin: 2.2cm; }
+  html, body { background: #fff !important; color: #000 !important; }
+  .masthead, .room, .room-switch, .colophon, .flash, .dialog, .backdrop { display: none !important; }
+  .print-only { display: block !important; font-family: "Times New Roman", Times, "SimSun", "Songti SC", serif; font-size: 12pt; line-height: 1.5; color: #000; background: #fff; }
+  .print-only h1 { font-size: 18pt; margin: 0 0 12pt; }
+  .print-only h2 { font-size: 14pt; margin: 18pt 0 6pt; }
+  .print-only h3 { font-size: 12pt; margin: 12pt 0 4pt; }
+  .print-only p { margin: 0 0 8pt; text-align: justify; white-space: pre-wrap; orphans: 3; widows: 3; }
+  .print-only ol { padding-left: 18pt; }
+  .print-only li { margin-bottom: 4pt; overflow-wrap: anywhere; }
+}

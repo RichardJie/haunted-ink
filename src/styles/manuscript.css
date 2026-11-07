@@ -1,0 +1,242 @@
+/* =========================================================================
+   The page: an ivory folio whose right margin belongs to the ghost reviewers.
+   Each paragraph and its ghost notes share one grid row (normal flow, no overlays).
+   ========================================================================= */
+.manuscript {
+  --margin-w: clamp(250px, 21vw, 320px);
+  --gap: clamp(18px, 2vw, 30px);
+  --pad: clamp(20px, 4.2vw, 60px);
+  position: relative; isolation: isolate; max-width: calc(46rem + var(--margin-w) + var(--gap)); font-family: var(--serif);
+}
+/* the ivory sheet itself, behind the paragraph column only */
+.manuscript::before {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 0; right: calc(var(--margin-w) + var(--gap));
+  border-radius: 2px;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 35%, rgba(0, 0, 0, 0) 60%, rgba(118, 86, 40, 0.13) 100%),
+    linear-gradient(180deg, var(--ivory) 0%, #ece2cd 100%);
+  box-shadow: 0 0 0 1px var(--ivory-edge), 0 50px 90px -40px rgba(0, 0, 0, 0.95), 0 0 120px -30px rgba(226, 194, 127, 0.16);
+}
+/* a printed double frame */
+.manuscript::after {
+  content: ""; position: absolute; z-index: -1; top: 12px; bottom: 12px; left: 12px; right: calc(var(--margin-w) + var(--gap) + 12px);
+  border: 3px double rgba(87, 78, 69, 0.22); pointer-events: none;
+}
+/* One grid for the whole page; each row's paragraph and ghost notes share a grid row (set by --row). */
+.manuscript { display: grid; grid-template-columns: minmax(0, 1fr) var(--margin-w); column-gap: var(--gap); align-items: start; }
+.folio-row { display: contents; }
+.folio-row > * { grid-row: var(--row); }
+.folio-row > .block, .folio-row > .running-head, .folio-row > .add-row { grid-column: 1; }
+.folio-row > .ghost-margin { grid-column: 2; }
+.folio-head > .ghost-roster { grid-column: 2; grid-row: var(--roster-rows, 1); }
+.folio-row > .block { padding: 0 var(--pad); min-width: 0; }
+.folio-head > .running-head { margin: 0 var(--pad) 26px; padding-top: clamp(28px, 4vw, 52px); }
+.folio-foot .add-row { padding: 6px var(--pad) clamp(28px, 4vw, 52px); }
+
+.running-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 6px 12px; flex-wrap: wrap;
+  font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted);
+  border-bottom: 1px solid rgba(87, 78, 69, 0.3); padding-bottom: 8px; margin-bottom: 26px;
+}
+.running-head .room-label { color: var(--ink); text-transform: none; font-size: 1.1rem; letter-spacing: 0.16em; }
+.running-head .numeral { color: var(--wet-ink); }
+
+/* ---------- a block: [reserved editor area] then [reserved control row] ---------- */
+.block { position: relative; padding-bottom: 0.35rem; }
+.field { position: relative; margin: 0 -12px; border-radius: 3px; transition: background-color 160ms ease; }
+.mirror, .field textarea {
+  display: block; width: 100%; margin: 0; padding: 6px 12px; border: 0; border-radius: 3px;
+  font-family: var(--serif); font-size: 1.125rem; line-height: 1.6; letter-spacing: normal; font-weight: 400; font-variant: normal;
+  white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4; text-align: left;
+}
+.mirror { color: var(--ink); min-height: calc(1.6em + 12px); pointer-events: none; user-select: none; }
+.field textarea {
+  position: absolute; inset: 0; height: 100%; resize: none; overflow: hidden; background: transparent;
+  color: transparent; caret-color: var(--ink); outline: none;
+}
+.field textarea::placeholder { color: var(--ink-muted); opacity: 0.8; font-style: italic; }
+.field textarea::selection { background: rgba(201, 164, 92, 0.5); color: transparent; }
+/* focus ring drawn inside the field's own box (negative offset), so it never reaches the controls below */
+.field textarea:focus-visible, .field textarea:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
+.field:hover { background-color: rgba(212, 197, 166, 0.22); }
+.field:focus-within { background-color: rgba(255, 252, 244, 0.55); }
+.block.is-active .field { box-shadow: inset 3px 0 0 var(--brass); }
+
+.block-tools {
+  display: flex; align-items: center; gap: 2px; min-height: 40px; margin-top: 6px; flex-wrap: wrap;
+  opacity: 0; transition: opacity 160ms ease;
+}
+.folio-row:hover .block-tools, .block:focus-within .block-tools, .block.is-active .block-tools { opacity: 1; }
+@media (hover: none) { .block-tools { opacity: 1; } }
+.tool {
+  min-height: 36px; padding: 0 10px; background: none; border: 1px solid transparent; border-radius: 2px; cursor: pointer;
+  font-family: var(--sans); font-size: 0.8rem; color: var(--ink-muted);
+}
+.tool:hover { color: var(--ink); border-color: rgba(87, 78, 69, 0.45); }
+.tool:first-child { color: var(--ink); }
+.tool.danger:hover { color: var(--ink-red); border-color: var(--ink-red); }
+.tool:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+@media (pointer: coarse) { .tool { min-height: 44px; } }
+.manuscript .btn.quiet { color: var(--ink-muted); }
+.manuscript .btn.quiet:hover:not(:disabled) { color: var(--ink); background: rgba(212, 197, 166, 0.35); border-color: rgba(87, 78, 69, 0.4); }
+.manuscript .page-col :focus-visible, .folio-foot :focus-visible { outline-color: var(--ink); }
+
+.is-heading .mirror, .is-heading textarea { font-weight: 700; font-variant: small-caps; letter-spacing: 0.04em; }
+.is-heading.lvl-1 .mirror, .is-heading.lvl-1 textarea { font-size: 1.85rem; line-height: 1.22; letter-spacing: 0.06em; }
+.is-heading.lvl-1 { padding-bottom: 0.9rem; }
+.is-heading.lvl-2 .mirror, .is-heading.lvl-2 textarea { font-size: 1.3rem; line-height: 1.3; }
+.is-heading.lvl-2 { padding-top: 1.2rem; }
+.is-heading.lvl-3 .mirror, .is-heading.lvl-3 textarea { font-size: 1.14rem; }
+.folio-row:not(.is-heading-row) > .block { padding-bottom: 0.85rem; }
+.mirror .hash { opacity: 0.3; }
+
+/* citation cues: no horizontal padding or margin, so the mirror stays aligned with the textarea */
+.cite { text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.cite-verified { text-decoration: underline solid var(--verdigris); }
+.cite-unchecked, .cite-no_doi, .cite-checking { text-decoration: underline dotted rgba(87, 78, 69, 0.6); }
+.cite-unlinked { text-decoration: underline dotted var(--ink-muted); text-decoration-thickness: 2px; }
+.cite-uncertain { text-decoration: underline dashed var(--amber-ink); text-decoration-thickness: 1.5px; }
+.cite-invalid_doi { text-decoration: underline wavy var(--ink-red); text-decoration-thickness: 1px; }
+.cite-mismatch { color: #7d1f20; border-radius: 2px; box-shadow: 0 0 0 1px rgba(155, 42, 43, 0.6), 0 0 0 3px var(--ivory), 0 0 0 4px rgba(155, 42, 43, 0.32); }
+.cite-not_found {
+  color: var(--ink-red); text-shadow: 0 0 0.4em rgba(155, 42, 43, 0.3);
+  background-repeat: repeat-x; background-position: 0 100%; background-size: 22px 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='6' viewBox='0 0 22 6'%3E%3Cpath d='M0 3.6 C3 0.6 5 5.6 8 2.6 S12.5 4.6 15 2.2 S19.5 4.2 22 3.2' fill='none' stroke='%239b2a2b' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+/* evidence still needed: an ink-red marker in the text */
+.mirror .need { color: var(--ink-red); background: rgba(155, 42, 43, 0.08); text-decoration: underline dashed rgba(155, 42, 43, 0.7); text-underline-offset: 4px; }
+
+/* DOI notes under the paragraph (reference status, separate from ghost critique) */
+.marginalia { list-style: none; margin: 4px 0 0; padding: 0; font-family: var(--sans); font-size: 0.78rem; line-height: 1.45; }
+.margin-note { border-left: 2px solid var(--ink-muted); padding: 2px 0 2px 10px; margin: 4px 0; color: var(--ink-muted); }
+.margin-note strong { font-weight: 700; }
+.margin-note .glyph { font-weight: 700; display: inline-block; min-width: 1.1em; text-align: center; }
+.note-not_found, .note-mismatch, .note-invalid_doi { border-color: var(--ink-red); color: var(--ink-red); }
+.note-not_found { font-family: var(--serif); font-style: italic; font-size: 0.95rem; border-left: 2px dashed var(--ink-red); }
+.note-not_found strong { font-style: normal; font-family: var(--sans); font-size: 0.78rem; }
+.note-mismatch { border-left: 4px double var(--ink-red); padding-left: 9px; }
+.note-uncertain { border-left: 2px dashed var(--amber-ink); color: #5f4410; }
+.margin-note .linklike { color: inherit; min-height: 0; padding: 0 2px; }
+.margin-note :focus-visible { outline-color: var(--ink); }
+.phantom-mark { vertical-align: -3px; margin-right: 4px; }
+.undo-bar { font-family: var(--sans); font-size: 0.8rem; color: var(--verdigris); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.undo-bar .linklike { color: var(--verdigris); font-weight: 600; min-height: 36px; }
+.undo-bar :focus-visible { outline-color: var(--ink); }
+
+/* wet ink: proposed text is warmer and settles when applied */
+ins.wet { color: var(--wet-ink); text-decoration: none; background: rgba(201, 164, 92, 0.22); border-bottom: 1px solid rgba(107, 52, 16, 0.4); }
+del { color: var(--ink-red); text-decoration: line-through; text-decoration-thickness: 1px; background: rgba(155, 42, 43, 0.07); }
+.mirror.settle { animation: settle 600ms ease-out; }
+@keyframes settle { from { color: var(--wet-ink); } to { color: var(--ink); } }
+
+/* ---------- ghost margin ---------- */
+.ghost-margin { font-family: var(--sans); font-size: 0.82rem; color: var(--bone); padding-top: 4px; min-width: 0; }
+.ghost-roster { padding-top: clamp(28px, 4vw, 52px); }
+.ghost-roster .roster-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ghost-roster .offline { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dust); border: 1px dashed var(--rule-lit); padding: 1px 6px; border-radius: 2px; cursor: help; }
+.ghost-roster ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; }
+.ghost-roster li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 8px; align-items: center; min-height: 26px; }
+.ghost-roster li strong { font-family: var(--serif); font-weight: 400; font-size: 0.95rem; color: var(--bone); }
+.ghost-roster li .cat { font-family: var(--sans); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); }
+.ghost-roster .roster-note { margin-top: 8px; font-family: var(--sans); font-size: 0.72rem; color: var(--dust); line-height: 1.45; }
+.cat-logic { --ghost: var(--spectral); }
+.cat-evidence { --ghost: var(--ink-red-lit); }
+.cat-clarity { --ghost: var(--brass-lit); }
+.ghost-roster li svg { color: var(--ghost); }
+
+.margin-actions { display: flex; }
+.margin-actions.idle { opacity: 0; transition: opacity 160ms ease; }
+.folio-row:hover .margin-actions.idle, .folio-row:focus-within .margin-actions.idle { opacity: 1; }
+@media (hover: none) { .margin-actions.idle { opacity: 1; } }
+.summon {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px 0 8px; cursor: pointer;
+  background: rgba(169, 202, 219, 0.05); border: 1px dashed rgba(169, 202, 219, 0.45); border-radius: 2px; color: var(--spectral); font-size: 0.8rem;
+}
+.summon:hover:not(:disabled) { background: rgba(169, 202, 219, 0.12); border-style: solid; }
+.summon:disabled { cursor: not-allowed; color: var(--dust); border-color: var(--rule-lit); background: none; }
+.ghost-margin .why { opacity: 0; transition: opacity 160ms ease; }
+.folio-row:hover .ghost-margin .why, .folio-row:focus-within .ghost-margin .why { opacity: 1; }
+@media (hover: none) { .ghost-margin .why { display: none; } }
+
+.review-head { display: flex; justify-content: space-between; gap: 8px; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dust); margin-bottom: 8px; }
+.stale-note { font-size: 0.76rem; color: var(--amber-lit); border-left: 2px dashed var(--amber-lit); padding-left: 8px; margin-bottom: 8px; }
+.quiet-review { display: flex; gap: 8px; align-items: flex-start; color: var(--spectral); font-size: 0.8rem; margin-bottom: 8px; }
+.ghost-reading { display: flex; align-items: center; gap: 10px; color: var(--spectral); font-size: 0.8rem; flex-wrap: wrap; }
+.drift { animation: drift 2.8s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translateY(2px); opacity: 0.6; } to { transform: translateY(-3px); opacity: 1; } }
+.ghost-failed { color: var(--ink-red-lit); font-size: 0.8rem; display: grid; gap: 6px; }
+.ghost-failed .fix { color: var(--bone); }
+
+.ghost-card {
+  position: relative; margin: 0 0 10px; padding: 10px 12px 6px 14px;
+  background: linear-gradient(160deg, rgba(31, 28, 37, 0.98), rgba(22, 20, 27, 0.98));
+  border: 1px solid var(--rule); border-left: 2px solid var(--ghost); border-radius: 2px;
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.9), -10px 0 30px -24px var(--ghost);
+  animation: materialise 520ms ease-out;
+}
+@keyframes materialise { from { opacity: 0; transform: translateX(-8px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+/* a hairline tether toward the paragraph it reads */
+.ghost-card::before { content: ""; position: absolute; left: calc(-1 * var(--gap) - 1px); top: 18px; width: calc(var(--gap) - 2px); border-top: 1px dashed color-mix(in srgb, var(--ghost) 60%, transparent); }
+.ghost-card header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--ghost); }
+.ghost-card .persona { font-family: var(--serif); font-variant: small-caps; letter-spacing: 0.1em; font-size: 0.98rem; color: var(--bone); }
+.ghost-card .cat-word { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); border: 1px solid color-mix(in srgb, var(--ghost) 55%, transparent); padding: 0 5px; border-radius: 2px; }
+.ghost-card .seal-word { margin-left: auto; display: inline-flex; gap: 4px; align-items: center; font-size: 0.7rem; color: var(--brass-lit); }
+.ghost-card blockquote { margin: 8px 0 6px; padding-left: 10px; border-left: 1px solid var(--rule-lit); font-family: var(--serif); font-style: italic; font-size: 0.95rem; line-height: 1.4; color: var(--bone); overflow-wrap: anywhere; }
+.quote-link { background: none; border: 0; padding: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; text-decoration: underline dotted var(--rule-lit); text-underline-offset: 4px; }
+.quote-link:hover { text-decoration-color: var(--ghost); }
+.ghost-card .gone { font-size: 0.72rem; color: var(--amber-lit); margin-bottom: 4px; }
+.ghost-card .critique { font-size: 0.82rem; line-height: 1.45; color: var(--bone); }
+.ghost-card .advice { font-size: 0.8rem; line-height: 1.45; color: var(--dust); margin-top: 6px; }
+.ghost-card .advice span { color: var(--brass-lit); font-weight: 600; }
+.card-actions { display: flex; gap: 2px; margin-top: 4px; margin-left: -8px; }
+.ghost-card.stale { opacity: 0.7; border-style: dashed; }
+.ghost-card.state-resolved, .ghost-card.state-dismissed { opacity: 0.75; box-shadow: none; }
+.settled { margin: 4px 0 8px; }
+.settled summary { cursor: pointer; font-size: 0.76rem; color: var(--dust); min-height: 32px; display: flex; align-items: center; }
+
+/* ---------- empty page ---------- */
+.empty-page { text-align: center; max-width: 54ch; margin: 3rem auto 4rem; }
+.empty-ghost { color: var(--spectral-ink); }
+.empty-page h2 { margin: 14px 0 2px; font-size: 1.5rem; letter-spacing: 0.18em; color: var(--ink); }
+.empty-page .engraving { color: var(--ink-muted); }
+.empty-rule { display: block; margin: 0 auto 14px; }
+.empty-page p { font-size: 1.06rem; line-height: 1.6; color: var(--ink-muted); }
+.empty-page .row { margin-top: 22px; }
+.empty-foot { margin-top: 18px !important; font-family: var(--sans); font-size: 0.8rem !important; }
+.btn.ink { background: var(--ink); border-color: var(--ink); color: var(--ivory); font-weight: 600; }
+.btn.ink:hover:not(:disabled) { background: #3a332c; border-color: #3a332c; }
+.btn.on-ivory { color: var(--ink); border-color: rgba(87, 78, 69, 0.55); }
+.btn.on-ivory:hover:not(:disabled) { background: var(--ivory-2); border-color: var(--ink); }
+.empty-page :focus-visible { outline-color: var(--ink); }
+
+/* ---------- narrow: ghost notes sit directly below their paragraph, on the page ---------- */
+@media (max-width: 899px) {
+  .manuscript { --margin-w: 0px; --gap: 0px; --pad: clamp(16px, 5vw, 32px); display: block; }
+  .folio-row { display: block; }
+  .manuscript::before { right: 0; }
+  .manuscript::after { right: 8px; left: 8px; top: 8px; bottom: 8px; }
+  .folio-row { grid-template-columns: minmax(0, 1fr); }
+  .ghost-margin { padding: 0 var(--pad); }
+  .ghost-margin.is-empty { display: none; }
+  .ghost-margin.has-review, .ghost-margin.is-busy { padding-bottom: 10px; }
+  .ghost-card::before { display: none; }
+  .ghost-roster { padding-top: 0; margin: 0 var(--pad) 18px; padding: 12px 14px; background: var(--night-2); border-radius: 2px; }
+  .ghost-roster ul { grid-template-columns: 1fr; }
+  .summon { background: var(--night-2); }
+  .margin-actions.idle { display: none; opacity: 1; margin-bottom: 8px; }
+  .folio-row:focus-within .margin-actions.idle { display: flex; }
+  .review-head, .stale-note { color: var(--ink-muted); }
+  .stale-note { color: #5f4410; border-color: var(--amber-ink); }
+  .quiet-review { background: var(--night-2); padding: 10px; border-radius: 2px; }
+}
+
+/* controls in the ghost margin sit on night ink, not on ivory */
+.ghost-margin .btn.quiet { color: var(--dust); }
+.ghost-margin .btn.quiet:hover:not(:disabled) { color: var(--bone); background: var(--night-3); border-color: var(--rule-lit); }
+.ghost-margin :focus-visible { outline-color: var(--brass-lit); }
+
+@media (min-width: 900px) { .ghost-roster.compact .roster-note { display: none; } }
+@media (max-width: 899px) {
+  .ghost-margin .why { color: var(--ink-muted); }
+  .summon:disabled { color: var(--ink-muted); border-color: rgba(87, 78, 69, 0.55); }
+}
