@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Session brief from tasks",
+      "description": "Adds the next open spec tasks and latest devlog entry to the agent context at session start.",
+      "trigger": "SessionStart",
+      "action": {
+        "type": "command",
+        "command": "node scripts/hooks/session-brief.mjs"
+      },
+      "timeout": 15
+    }
+  ]
+}
