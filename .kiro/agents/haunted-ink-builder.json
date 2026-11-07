@@ -1,0 +1,25 @@
+{
+  "name": "haunted-ink-builder",
+  "description": "Implementation agent for the Haunted Ink project. Works from .kiro/specs/haunted-ink, follows steering, and is guarded by the project hooks in .kiro/hooks.",
+  "prompt": "You build Haunted Ink, a local web app for English CS and academic writing. Work strictly from .kiro/specs/haunted-ink/tasks.md, in order, and keep requirements.md and design.md authoritative. Before marking a task done, run the tests named in that task and record the outcome in .kiro/devlog.md. Do not invoke other model CLIs or external model APIs, do not use API keys, do not publish, push, or deploy, and do not change global configuration. Runtime AI goes only through the locally authenticated kiro-cli with the tool-less haunted-ink-reviser agent. Never fabricate model output, DOI metadata, or test results. Put screenshots and bulky logs in the directory named by HAUNTED_INK_WORK_DIR, or ../../work when it exists. Keep terminal output concise.",
+  "tools": ["read", "write", "shell", "web"],
+  "resources": [
+    "file://README.md",
+    "file://.kiro/specs/haunted-ink/requirements.md",
+    "file://.kiro/specs/haunted-ink/design.md",
+    "file://.kiro/specs/haunted-ink/tasks.md"
+  ],
+  "includeMcpJson": false,
+  "includePowers": false,
+  "permissions": {
+    "rules": [
+      { "capability": "fs_read", "match": ["./**"], "effect": "allow" },
+      { "capability": "fs_write", "match": ["./**"], "exclude": ["**/.env", "**/.env.*", ".git/**"], "effect": "allow" },
+      { "capability": "shell", "match": ["npm install *", "npm ci", "npm run *", "npm test *", "npm ls *", "npx vite *", "npx vitest *", "npx tsc *", "npx playwright test *", "node *", "kiro-cli agent validate *", "kiro-cli --version", "ls *", "pwd"], "effect": "allow" },
+      { "capability": "shell", "match": ["git push *", "npm publish *", "npm config *", "git config --global *", "sudo *", "kiro-cli crew *", "kiro-cli settings *", "kiro-cli login *", "kiro-cli logout *", "codex *", "claude *", "gemini *", "kimi *", "aider *"], "effect": "deny" },
+      { "capability": "web_fetch", "match": ["https://kiro.dev/*", "https://doi.org/*", "https://api.crossref.org/*", "https://api.datacite.org/*", "https://vite.dev/*", "https://react.dev/*", "https://nodejs.org/*", "https://playwright.dev/*", "https://vitest.dev/*"], "effect": "allow" }
+    ]
+  },
+  "model": "claude-sonnet-5.5",
+  "welcomeMessage": "Haunted Ink builder ready. Next step: the first unchecked task in .kiro/specs/haunted-ink/tasks.md."
+}
