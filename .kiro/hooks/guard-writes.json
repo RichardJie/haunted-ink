@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Guard file writes",
+      "description": "Keeps agent writes inside the project or the parent work directory and away from secrets, node_modules, .git and hook evidence.",
+      "trigger": "PreToolUse",
+      "matcher": "write",
+      "action": {
+        "type": "command",
+        "command": "node scripts/hooks/guard-writes.mjs"
+      },
+      "timeout": 15
+    }
+  ]
+}

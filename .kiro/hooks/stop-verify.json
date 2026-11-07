@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Verify before finishing",
+      "description": "Runs npm run check when a turn ends and asks the agent to continue (max twice) if it fails.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "node scripts/hooks/stop-verify.mjs"
+      },
+      "timeout": 330
+    }
+  ]
+}

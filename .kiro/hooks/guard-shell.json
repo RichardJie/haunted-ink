@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Guard shell commands",
+      "description": "Blocks other model CLIs, external model APIs, API keys, publish/deploy, global config changes and destructive commands.",
+      "trigger": "PreToolUse",
+      "matcher": "shell",
+      "action": {
+        "type": "command",
+        "command": "node scripts/hooks/guard-shell.mjs"
+      },
+      "timeout": 15
+    }
+  ]
+}
